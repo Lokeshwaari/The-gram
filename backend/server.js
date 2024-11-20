@@ -1,10 +1,20 @@
 //const express = require ("express")
-import express from "express"
-import dotenv from "dotenv"
-import authRoute from "./routes/auth.route.js"
-import connectDB from "./db/connectDB.js"
-import cookieParser from "cookie-parser"
+import express from "express";
+import dotenv from "dotenv";
+import authRoute from "./routes/auth.route.js";
+import userRoutes from "./routes/user.route.js"
+import connectDB from "./db/connectDB.js";
+import cookieParser from "cookie-parser";
+import cloudinary from "cloudinary";
+import postRoute from "./routes/post.route.js";
+import notificationRoute from "./routes/notification.route.js";
 
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key : process.env.CLOUDINARY_API_SECRET_KEY,
+    api_secret : process.env.CLOUDINARY_API_KEY
+})
 
 dotenv.config();
 const app = express();
@@ -19,7 +29,13 @@ app.get("/" , (req, res) => {
 
 app.use(express.json());
 app.use(cookieParser());
+
+
 app.use("/api/auth" , authRoute);
+app.use("/api/users", userRoutes);
+app.use("/api/posts" , postRoute);
+app.use("/api/notifications" , notificationRoute);
+
 app.listen(PORT ,()=> {
 console.log(`Server is running on ${PORT}`)
 connectDB();
